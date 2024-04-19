@@ -1,0 +1,5 @@
+#!/usr/bin/env bash -e
+set LOGLEVEL=${LOGLEVEL:="info"}
+set TARGET=${TARGET:="-r"}
+source .env || (echo "can't rum bot, token not found" && exit 2)
+RUST_LOG=$LOGLEVEL cargo run ${TARGET} |& tee log/tgrun-$(date +%s).log

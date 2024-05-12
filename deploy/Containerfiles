@@ -1,0 +1,11 @@
+# podman build --runtime-flag debug -t raroexporter -f raroescucha-bot/deploy/Containerfiles .
+FROM registry.suse.com/bci/rust:latest as builder
+WORKDIR raroescucha-bot
+COPY ../* . 
+RUN ["pwd"]
+RUN zypper -n in libopenssl-devel
+RUN ["cargo", "build", "-r", "--bin", "raroescucha-exporter"]
+
+FROM registry.suse.com/bci/rust:latest as runtime
+COPY --from=builder /raroescucha-bot/target/release/raroescucha-exporter /
+CMD ["/raroescucha-exporter"]

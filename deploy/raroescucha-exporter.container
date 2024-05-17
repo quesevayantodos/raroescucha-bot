@@ -1,0 +1,21 @@
+[Unit]
+Description=Raroescucha bot exporter
+Requires=network-online.target
+# odman run --rm -v $(pwd)/data:/data:rw,Z,noexec --env-file .env -e RUST_BACKTRACE=full raroexporter:latest
+
+[Container]
+# Use the centos image
+Image=localhost/raroexporter:latest
+# Use volume and network defined below
+EnvironmentFile=/root/qsvt/.env
+Volume=/root/qsvt/data:/data:rw,Z,noexec
+HostName=quesevayantodos
+#ReadOnly=true
+
+[Service]
+TimeoutStartSec=900
+Restart=on-abnormal
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target

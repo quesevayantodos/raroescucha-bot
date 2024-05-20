@@ -1,10 +1,12 @@
 FROM registry.suse.com/bci/rust:latest as builder
-WORKDIR raroescucha-bot
-COPY ../* . 
-RUN ["pwd"]
+WORKDIR src
+RUN ["ls", "-la"]
+COPY . . 
+RUN ["ls", "-la"]
 RUN zypper -n in libopenssl-devel
 RUN ["cargo", "build", "-r", "--bin", "raroescucha-exporter"]
-RUN ["mkdir", "/database/"]
-FROM registry.suse.com/bci/rust:latest as runtime
-COPY --from=builder /raroescucha-bot/target/release/raroescucha-exporter /
+FROM registry.suse.com/bci/bci-busybox:15.6 as runtime
+RUN ["ls", "-la"]
+WORKDIR /
+COPY --from=builder /src/target/release/raroescucha-exporter /
 CMD ["/raroescucha-exporter"]

@@ -1,12 +1,12 @@
+# Split the build and runtime stages
+# at some point the build script should support different binaries/targets to build
 FROM registry.suse.com/bci/rust:latest as builder
 WORKDIR src
-RUN ["ls", "-la"]
 COPY . . 
-RUN ["ls", "-la"]
 RUN zypper -n in libopenssl-devel
 RUN ["cargo", "build", "-r", "--bin", "raroescucha-exporter"]
+
+# Only copy the needed files, so we can use a liveweight image
 FROM registry.suse.com/bci/bci-busybox:15.6 as runtime
-RUN ["ls", "-la"]
-WORKDIR /
 COPY --from=builder /src/target/release/raroescucha-exporter /
 CMD ["/raroescucha-exporter"]
